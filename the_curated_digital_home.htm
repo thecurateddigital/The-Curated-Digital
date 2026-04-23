@@ -1,0 +1,1425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Curated Digital</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --void: #00000f;
+  --deep: #020214;
+  --panel: #050520;
+  --cyan: #00f5ff;
+  --cyan-dim: rgba(0,245,255,0.15);
+  --cyan-glow: rgba(0,245,255,0.4);
+  --magenta: #ff00aa;
+  --mag-dim: rgba(255,0,170,0.15);
+  --lime: #39ff14;
+  --gold: #ffd700;
+  --text: #c8e8f0;
+  --muted: rgba(200,232,240,0.4);
+  --border: rgba(0,245,255,0.18);
+  --border-hot: rgba(0,245,255,0.55);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--void);
+  color: var(--text);
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 400;
+  overflow-x: hidden;
+  cursor: crosshair;
+}
+
+/* ── SCANLINE OVERLAY ── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,245,255,0.015) 2px,
+    rgba(0,245,255,0.015) 4px
+  );
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* ── GRID BACKGROUND ── */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(0,245,255,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,245,255,0.04) 1px, transparent 1px);
+  background-size: 60px 60px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 500;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 4vw;
+  background: rgba(2,2,20,0.85);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+}
+
+nav::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+  animation: scanH 4s linear infinite;
+}
+
+@keyframes scanH {
+  0% { background-position: -100% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.logo {
+  font-family: 'Orbitron', monospace;
+  font-weight: 900;
+  font-size: 1.2rem;
+  letter-spacing: 0.15em;
+  text-decoration: none;
+  color: var(--cyan);
+  text-shadow: 0 0 20px var(--cyan-glow), 0 0 40px rgba(0,245,255,0.2);
+  position: relative;
+}
+
+.logo span { color: var(--magenta); text-shadow: 0 0 20px rgba(255,0,170,0.6); }
+
+nav ul {
+  display: flex;
+  gap: 2rem;
+  list-style: none;
+}
+
+nav ul a {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--muted);
+  transition: color 0.2s, text-shadow 0.2s;
+}
+
+nav ul a:hover {
+  color: var(--cyan);
+  text-shadow: 0 0 10px var(--cyan-glow);
+}
+
+.nav-cta {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.65rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.1em !important;
+  color: var(--void) !important;
+  background: var(--cyan);
+  padding: 0.5rem 1.2rem;
+  clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+  text-shadow: none !important;
+  transition: background 0.2s, box-shadow 0.2s !important;
+}
+
+.nav-cta:hover {
+  background: var(--magenta) !important;
+  box-shadow: 0 0 20px rgba(255,0,170,0.5) !important;
+  color: #fff !important;
+}
+
+/* ── HERO ── */
+.hero {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  padding: 8rem 4vw 4rem;
+  gap: 4rem;
+  position: relative;
+  z-index: 1;
+}
+
+/* Animated corner brackets */
+.hero-content { position: relative; }
+
+.corner-tl, .corner-br {
+  position: absolute;
+  width: 30px; height: 30px;
+  opacity: 0.5;
+}
+
+.corner-tl { top: -12px; left: -12px; border-top: 2px solid var(--cyan); border-left: 2px solid var(--cyan); }
+.corner-br { bottom: -12px; right: -12px; border-bottom: 2px solid var(--cyan); border-right: 2px solid var(--cyan); }
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: 'Orbitron', monospace;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--cyan);
+  border: 1px solid var(--border);
+  padding: 0.4rem 1rem;
+  margin-bottom: 1.8rem;
+  clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
+  background: var(--cyan-dim);
+  animation: fadeUp 0.7s ease both;
+}
+
+.badge-dot {
+  width: 6px; height: 6px;
+  background: var(--lime);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--lime);
+  animation: blink 1.2s infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.2; }
+}
+
+.hero h1 {
+  font-family: 'Orbitron', monospace;
+  font-size: clamp(1.8rem, 3.5vw, 3.2rem);
+  font-weight: 900;
+  line-height: 1.1;
+  letter-spacing: 0.03em;
+  margin-bottom: 1.4rem;
+  animation: fadeUp 0.7s 0.1s ease both;
+  text-transform: uppercase;
+}
+
+.hero h1 .cyan { color: var(--cyan); text-shadow: 0 0 30px var(--cyan-glow); }
+.hero h1 .mag { color: var(--magenta); text-shadow: 0 0 30px rgba(255,0,170,0.5); }
+
+.hero-sub {
+  font-size: 1rem;
+  color: var(--muted);
+  max-width: 430px;
+  margin-bottom: 2.2rem;
+  line-height: 1.7;
+  font-weight: 400;
+  animation: fadeUp 0.7s 0.2s ease both;
+  letter-spacing: 0.03em;
+}
+
+.hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  animation: fadeUp 0.7s 0.3s ease both;
+}
+
+.btn-primary {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--void);
+  background: var(--cyan);
+  border: none;
+  padding: 0.9rem 2rem;
+  clip-path: polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%);
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 0 30px rgba(0,245,255,0.4), inset 0 1px 0 rgba(255,255,255,0.3);
+  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 60%;
+  height: 100%;
+  background: rgba(255,255,255,0.15);
+  transform: skewX(-20deg);
+  transition: left 0.4s;
+}
+
+.btn-primary:hover::before { left: 150%; }
+.btn-primary:hover {
+  background: var(--magenta);
+  box-shadow: 0 0 40px rgba(255,0,170,0.6);
+  color: #fff;
+}
+
+.btn-ghost {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border-bottom: 1px solid rgba(0,245,255,0.2);
+  padding-bottom: 2px;
+  transition: color 0.2s;
+}
+
+.btn-ghost:hover { color: var(--cyan); }
+
+/* Hero stats */
+.hero-stats {
+  display: flex;
+  gap: 2rem;
+  margin-top: 2.5rem;
+  animation: fadeUp 0.7s 0.4s ease both;
+}
+
+.stat-item { border-left: 2px solid var(--border-hot); padding-left: 1rem; }
+.stat-val {
+  font-family: 'Orbitron', monospace;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--cyan);
+  text-shadow: 0 0 20px var(--cyan-glow);
+  line-height: 1;
+}
+.stat-label { font-size: 0.72rem; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; margin-top: 0.3rem; }
+
+/* ── DASHBOARD MOCK ── */
+.hero-visual { animation: fadeUp 0.7s 0.25s ease both; position: relative; }
+
+.dashboard-mock {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0;
+  overflow: hidden;
+  box-shadow:
+    0 0 60px rgba(0,245,255,0.1),
+    0 0 120px rgba(0,245,255,0.05),
+    inset 0 1px 0 rgba(0,245,255,0.1);
+  position: relative;
+}
+
+.dashboard-mock::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--magenta), var(--cyan), var(--magenta));
+  background-size: 200%;
+  animation: shimmer 3s linear infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: 0% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.mock-titlebar {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.8rem 1rem;
+  border-bottom: 1px solid var(--border);
+  background: rgba(0,245,255,0.03);
+}
+
+.mock-dot { width: 8px; height: 8px; border-radius: 50%; }
+.mock-dot:nth-child(1) { background: var(--magenta); box-shadow: 0 0 6px rgba(255,0,170,0.6); }
+.mock-dot:nth-child(2) { background: var(--gold); box-shadow: 0 0 6px rgba(255,215,0,0.6); }
+.mock-dot:nth-child(3) { background: var(--lime); box-shadow: 0 0 6px rgba(57,255,20,0.6); }
+
+.mock-title {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.2em;
+  color: var(--muted);
+  margin-left: auto;
+  text-transform: uppercase;
+}
+
+.mock-body { padding: 1rem; }
+
+.mock-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.6rem;
+  margin-bottom: 0.8rem;
+}
+
+.mock-stat {
+  background: rgba(0,245,255,0.04);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 0.7rem 0.8rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.mock-stat::before {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 1px;
+  background: var(--cyan);
+  opacity: 0.4;
+}
+
+.mock-stat-val {
+  font-family: 'Orbitron', monospace;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--cyan);
+  text-shadow: 0 0 10px var(--cyan-glow);
+}
+
+.mock-stat-label {
+  font-size: 0.58rem;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-top: 0.2rem;
+}
+
+/* Chart */
+.mock-chart {
+  background: rgba(0,0,0,0.3);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 0.8rem;
+  height: 90px;
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  margin-bottom: 0.8rem;
+  position: relative;
+}
+
+.mock-chart::before {
+  content: 'CONVERSION ANALYTICS';
+  position: absolute;
+  top: 6px; left: 10px;
+  font-family: 'Orbitron', monospace;
+  font-size: 0.45rem;
+  letter-spacing: 0.15em;
+  color: rgba(0,245,255,0.3);
+}
+
+.bar {
+  flex: 1;
+  border-radius: 2px 2px 0 0;
+  position: relative;
+  animation: growBar 1.5s ease both;
+}
+
+@keyframes growBar {
+  from { transform: scaleY(0); transform-origin: bottom; }
+  to { transform: scaleY(1); }
+}
+
+/* Lead rows */
+.mock-leads {
+  background: rgba(0,0,0,0.25);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.leads-header {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.5rem;
+  letter-spacing: 0.2em;
+  color: var(--muted);
+  padding: 0.5rem 0.8rem;
+  border-bottom: 1px solid var(--border);
+  text-transform: uppercase;
+}
+
+.lead-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.4rem 0.8rem;
+  border-bottom: 1px solid rgba(0,245,255,0.06);
+  transition: background 0.2s;
+}
+
+.lead-row:hover { background: rgba(0,245,255,0.04); }
+.lead-row:last-child { border-bottom: none; }
+
+.lead-name { font-size: 0.72rem; color: var(--text); font-weight: 500; letter-spacing: 0.05em; }
+.lead-status {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.5rem;
+  padding: 0.2rem 0.6rem;
+  letter-spacing: 0.1em;
+  clip-path: polygon(4px 0%, 100% 0%, calc(100% - 4px) 100%, 0% 100%);
+}
+
+.s-booked { background: rgba(57,255,20,0.15); color: var(--lime); }
+.s-nurture { background: rgba(255,215,0,0.15); color: var(--gold); }
+.s-new { background: rgba(0,245,255,0.15); color: var(--cyan); }
+
+/* ── TRUST BAR ── */
+.trust-bar {
+  position: relative;
+  z-index: 1;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 1rem 4vw;
+  display: flex;
+  align-items: center;
+  gap: 3rem;
+  background: rgba(0,245,255,0.02);
+}
+
+.trust-label {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.2em;
+  color: rgba(0,245,255,0.3);
+  text-transform: uppercase;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.trust-logos { display: flex; gap: 2.5rem; align-items: center; flex-wrap: wrap; }
+.trust-logo {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: rgba(200,232,240,0.2);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition: color 0.2s;
+}
+.trust-logo:hover { color: var(--cyan); text-shadow: 0 0 10px var(--cyan-glow); }
+
+/* ── SECTIONS ── */
+section { padding: 6rem 4vw; position: relative; z-index: 1; }
+
+.section-eyebrow {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--cyan);
+  margin-bottom: 0.8rem;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.section-eyebrow::before {
+  content: '';
+  display: block;
+  width: 24px;
+  height: 1px;
+  background: var(--cyan);
+  box-shadow: 0 0 6px var(--cyan-glow);
+}
+
+.section-title {
+  font-family: 'Orbitron', monospace;
+  font-size: clamp(1.5rem, 3vw, 2.4rem);
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  line-height: 1.15;
+  max-width: 620px;
+  margin-bottom: 0.8rem;
+  text-transform: uppercase;
+}
+
+.section-sub {
+  color: var(--muted);
+  max-width: 500px;
+  margin-bottom: 3rem;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  letter-spacing: 0.03em;
+}
+
+/* ── SERVICES ── */
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+}
+
+.service-card {
+  background: var(--panel);
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+  transition: background 0.3s;
+  cursor: default;
+}
+
+.service-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+  transform: scaleX(0);
+  transition: transform 0.4s;
+}
+
+.service-card:hover { background: rgba(0,245,255,0.04); }
+.service-card:hover::before { transform: scaleX(1); }
+
+.service-icon {
+  width: 44px; height: 44px;
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  margin-bottom: 1.2rem;
+  clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+  background: rgba(0,245,255,0.06);
+}
+
+.service-card h3 {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 0.7rem;
+  color: var(--cyan);
+}
+
+.service-card p {
+  font-size: 0.85rem;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.service-price {
+  margin-top: 1.2rem;
+  font-family: 'Orbitron', monospace;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--magenta);
+  text-shadow: 0 0 10px rgba(255,0,170,0.4);
+}
+
+.service-price span {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.72rem;
+  color: var(--muted);
+  font-weight: 400;
+}
+
+.card-num {
+  position: absolute;
+  top: 1.2rem; right: 1.2rem;
+  font-family: 'Orbitron', monospace;
+  font-size: 0.6rem;
+  color: rgba(0,245,255,0.15);
+  letter-spacing: 0.1em;
+}
+
+/* ── FUNNEL ── */
+.funnel-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5rem;
+  align-items: center;
+}
+
+.funnel-visual { display: flex; flex-direction: column; gap: 0; }
+
+.funnel-step {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.2rem;
+  border: 1px solid var(--border);
+  border-bottom: none;
+  position: relative;
+  background: var(--panel);
+  transition: background 0.2s;
+  cursor: default;
+}
+
+.funnel-step:last-child { border-bottom: 1px solid var(--border); }
+.funnel-step:hover { background: rgba(0,245,255,0.04); }
+
+.funnel-step::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 2px;
+  background: var(--cyan);
+  opacity: 0;
+  transition: opacity 0.3s;
+  box-shadow: 0 0 8px var(--cyan-glow);
+}
+
+.funnel-step:hover::before { opacity: 1; }
+
+.step-num {
+  width: 32px; height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Orbitron', monospace;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--void);
+  background: var(--cyan);
+  clip-path: polygon(5px 0%, 100% 0%, calc(100% - 5px) 100%, 0% 100%);
+  flex-shrink: 0;
+}
+
+.funnel-step:nth-child(2) .step-num { background: var(--magenta); }
+.funnel-step:nth-child(3) .step-num { background: var(--gold); color: #111; }
+.funnel-step:nth-child(4) .step-num { background: var(--lime); color: #111; }
+.funnel-step:nth-child(5) .step-num { background: #a060ff; }
+
+.step-info h4 {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text);
+  margin-bottom: 0.2rem;
+}
+
+.step-info p { font-size: 0.78rem; color: var(--muted); }
+
+.step-rate {
+  margin-left: auto;
+  font-family: 'Orbitron', monospace;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--cyan);
+  text-shadow: 0 0 10px var(--cyan-glow);
+  flex-shrink: 0;
+}
+
+/* ── AUTOMATIONS ── */
+.auto-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+}
+
+.auto-card {
+  border: 1px solid var(--border);
+  background: var(--panel);
+  padding: 1.8rem;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.auto-card::after {
+  content: '';
+  position: absolute;
+  top: -50%; right: -50%;
+  width: 150px; height: 150px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0,245,255,0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.auto-card:hover {
+  border-color: var(--border-hot);
+  box-shadow: 0 0 30px rgba(0,245,255,0.08);
+}
+
+.auto-card h3 {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--cyan);
+  margin-bottom: 0.6rem;
+}
+
+.auto-card p { font-size: 0.85rem; color: var(--muted); line-height: 1.7; }
+
+.auto-icon {
+  font-size: 1.6rem;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.auto-badge {
+  display: inline-block;
+  margin-top: 1rem;
+  font-family: 'Orbitron', monospace;
+  font-size: 0.5rem;
+  padding: 0.25rem 0.8rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  border: 1px solid var(--border-hot);
+  color: var(--cyan);
+  clip-path: polygon(5px 0%, 100% 0%, calc(100% - 5px) 100%, 0% 100%);
+  background: var(--cyan-dim);
+}
+
+/* ── TESTIMONIALS ── */
+.testi-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+.testi-card {
+  border: 1px solid var(--border);
+  background: var(--panel);
+  padding: 1.8rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.testi-card::before {
+  content: '"';
+  position: absolute;
+  top: -10px; right: 14px;
+  font-size: 6rem;
+  font-family: 'Orbitron', monospace;
+  color: rgba(0,245,255,0.05);
+  line-height: 1;
+  pointer-events: none;
+}
+
+.stars {
+  font-size: 0.75rem;
+  color: var(--gold);
+  letter-spacing: 0.1em;
+  text-shadow: 0 0 6px rgba(255,215,0,0.5);
+  margin-bottom: 1rem;
+}
+
+.testi-card blockquote {
+  font-size: 0.88rem;
+  color: var(--text);
+  line-height: 1.7;
+  margin-bottom: 1.4rem;
+  font-style: italic;
+  opacity: 0.85;
+}
+
+.reviewer { display: flex; align-items: center; gap: 0.8rem; }
+
+.avatar {
+  width: 36px; height: 36px;
+  clip-path: polygon(5px 0%, 100% 0%, calc(100% - 5px) 100%, 0% 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Orbitron', monospace;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--void);
+  flex-shrink: 0;
+}
+
+.reviewer-info strong {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: var(--text);
+  font-family: 'Rajdhani', sans-serif;
+}
+
+.reviewer-info span { font-size: 0.72rem; color: var(--muted); }
+
+/* ── BOOKING ── */
+.booking-section {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding: 7rem 4vw;
+  background: var(--deep);
+  overflow: hidden;
+}
+
+.booking-section::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--cyan), var(--magenta), var(--cyan), transparent);
+}
+
+.booking-section::after {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 600px; height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0,245,255,0.06) 0%, rgba(255,0,170,0.03) 40%, transparent 70%);
+  pointer-events: none;
+}
+
+.booking-card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 2.5rem;
+  text-align: left;
+  position: relative;
+  z-index: 1;
+  box-shadow: 0 0 60px rgba(0,245,255,0.08);
+}
+
+/* Corner decorations on booking card */
+.booking-card::before, .booking-card::after {
+  content: '';
+  position: absolute;
+  width: 20px; height: 20px;
+}
+
+.booking-card::before {
+  top: -1px; left: -1px;
+  border-top: 2px solid var(--cyan);
+  border-left: 2px solid var(--cyan);
+}
+
+.booking-card::after {
+  bottom: -1px; right: -1px;
+  border-bottom: 2px solid var(--magenta);
+  border-right: 2px solid var(--magenta);
+}
+
+.booking-card h3 {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--cyan);
+  text-shadow: 0 0 15px var(--cyan-glow);
+  margin-bottom: 0.4rem;
+}
+
+.booking-card p { font-size: 0.82rem; color: var(--muted); margin-bottom: 1.8rem; letter-spacing: 0.05em; }
+
+.form-row { margin-bottom: 1rem; }
+.form-row label {
+  display: block;
+  font-family: 'Orbitron', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(0,245,255,0.45);
+  margin-bottom: 0.4rem;
+}
+
+.form-row input, .form-row select {
+  width: 100%;
+  background: rgba(0,0,0,0.4);
+  border: 1px solid var(--border);
+  border-radius: 0;
+  padding: 0.7rem 1rem;
+  color: var(--text);
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
+}
+
+.form-row input:focus, .form-row select:focus {
+  border-color: var(--cyan);
+  box-shadow: 0 0 15px rgba(0,245,255,0.15);
+}
+
+.form-row input::placeholder { color: rgba(200,232,240,0.2); }
+.form-row select option { background: #050520; color: var(--text); }
+
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+.btn-book {
+  width: 100%;
+  margin-top: 0.5rem;
+  background: transparent;
+  border: 1px solid var(--cyan);
+  color: var(--cyan);
+  padding: 1rem;
+  font-family: 'Orbitron', monospace;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  cursor: pointer;
+  clip-path: polygon(10px 0%, 100% 0%, calc(100% - 10px) 100%, 0% 100%);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s;
+  box-shadow: 0 0 20px rgba(0,245,255,0.15), inset 0 0 20px rgba(0,245,255,0.05);
+}
+
+.btn-book::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--cyan);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s;
+}
+
+.btn-book:hover::before { transform: scaleX(1); }
+
+.btn-book:hover {
+  color: var(--void);
+  box-shadow: 0 0 40px rgba(0,245,255,0.4);
+}
+
+.btn-book span { position: relative; z-index: 1; }
+
+.booking-note {
+  text-align: center;
+  margin-top: 1rem;
+  font-family: 'Orbitron', monospace;
+  font-size: 0.5rem;
+  letter-spacing: 0.15em;
+  color: rgba(200,232,240,0.2);
+}
+
+/* ── FOOTER ── */
+footer {
+  position: relative;
+  z-index: 1;
+  background: #000008;
+  border-top: 1px solid var(--border);
+  padding: 2.5rem 4vw;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.footer-links { display: flex; gap: 2rem; list-style: none; }
+.footer-links a {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(200,232,240,0.25);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.footer-links a:hover { color: var(--cyan); }
+.footer-copy {
+  font-family: 'Orbitron', monospace;
+  font-size: 0.5rem;
+  letter-spacing: 0.12em;
+  color: rgba(200,232,240,0.18);
+}
+
+/* ── SECTION ALTERNATES ── */
+section.alt { background: rgba(0,245,255,0.015); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.fade-in.visible { opacity: 1; transform: translateY(0); }
+
+.stagger > * { opacity: 0; transform: translateY(20px); transition: opacity 0.5s ease, transform 0.5s ease; }
+.stagger.visible > *:nth-child(1) { opacity: 1; transform: none; transition-delay: 0s; }
+.stagger.visible > *:nth-child(2) { opacity: 1; transform: none; transition-delay: 0.08s; }
+.stagger.visible > *:nth-child(3) { opacity: 1; transform: none; transition-delay: 0.16s; }
+.stagger.visible > *:nth-child(4) { opacity: 1; transform: none; transition-delay: 0.24s; }
+.stagger.visible > *:nth-child(5) { opacity: 1; transform: none; transition-delay: 0.32s; }
+.stagger.visible > *:nth-child(6) { opacity: 1; transform: none; transition-delay: 0.40s; }
+
+/* Glitch text effect */
+.glitch {
+  position: relative;
+}
+
+.glitch:hover::before,
+.glitch:hover::after {
+  content: attr(data-text);
+  position: absolute;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+}
+
+.glitch:hover::before {
+  color: var(--magenta);
+  clip-path: polygon(0 20%, 100% 20%, 100% 40%, 0 40%);
+  transform: translateX(-2px);
+  animation: glitch1 0.3s step-end infinite;
+}
+
+.glitch:hover::after {
+  color: var(--cyan);
+  clip-path: polygon(0 60%, 100% 60%, 100% 80%, 0 80%);
+  transform: translateX(2px);
+  animation: glitch2 0.4s step-end infinite;
+}
+
+@keyframes glitch1 {
+  0%, 100% { transform: translateX(-2px); }
+  50% { transform: translateX(2px); }
+}
+
+@keyframes glitch2 {
+  0%, 100% { transform: translateX(2px); }
+  50% { transform: translateX(-2px); }
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  .hero { grid-template-columns: 1fr; padding-top: 6rem; }
+  .services-grid { grid-template-columns: 1fr; }
+  .funnel-section { grid-template-columns: 1fr; }
+  .auto-grid { grid-template-columns: 1fr; }
+  .testi-grid { grid-template-columns: 1fr; }
+  .form-grid { grid-template-columns: 1fr; }
+  nav ul { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav>
+  <a href="#" class="logo">THE CURATED<span> DIGITAL</span></a>
+  <ul>
+    <li><a href="#services">SERVICES</a></li>
+    <li><a href="#funnel">SYSTEM</a></li>
+    <li><a href="#automations">AUTOMATE</a></li>
+    <li><a href="#testimonials">RESULTS</a></li>
+    <li><a href="#book" class="nav-cta">BOOK CALL</a></li>
+  </ul>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="corner-tl"></div>
+    <div class="corner-br"></div>
+    <div class="hero-badge">
+      <span class="badge-dot"></span>
+      Next-Gen Funnels. Intelligent Automations. Unstoppable Growth
+    </div>
+    <h1 class="glitch" data-text="WE BUILD SYSTEMS THAT CONVERT STRANGERS INTO CLIENTS">
+      WE BUILD <span class="cyan">SYSTEMS</span> THAT <span class="mag">CONVERT</span> STRANGERS INTO <span class="cyan">CLIENTS</span>
+    </h1>
+    <p class="hero-sub">The Curated Digital crafts high-performance landing pages, automated sales funnels, and CRM workflows so you close more deals on autopilot.</p>
+    <div class="hero-actions">
+      <a href="#book" class="btn-primary">⬡ BOOK STRATEGY CALL</a>
+    </div>
+    </div>
+</section>
+
+
+<!-- ── SERVICES ── -->
+<section id="services">
+  <div class="section-eyebrow fade-in">SERVICES</div>
+  <h2 class="section-title fade-in">FULL-STACK DIGITAL GROWTH</h2>
+  <p class="section-sub fade-in">From first impression to closed deal, we design every touchpoint of your client acquisition engine.</p>
+  <div class="services-grid stagger">
+    <div class="service-card">
+      <span class="card-num">01</span>
+      <div class="service-icon">🖥️</div>
+      <h3>Landing Page Design</h3>
+      <p>Conversion-optimized pages built with scroll storytelling, trust triggers, and A/B tested layouts.Every pixel earns its place.</p>
+    </div>
+    <div class="service-card">
+      <span class="card-num">02</span>
+      <div class="service-icon">⚡</div>
+      <h3>Sales Funnel Build</h3>
+      <p>ulti-step funnels with lead capture, tripwire offers, upsell sequences, and booking integrations fully mapped and launched.</p>
+    </div>
+    <div class="service-card">
+      <span class="card-num">03</span>
+      <div class="service-icon">🤖</div>
+      <h3>CRM & Automations</h3>
+      <p>Automated follow-up workflows, appointment reminders, lead scoring, and email sequences in Go High Level or your stack.</p>
+    </div>
+    <div class="service-card">
+      <span class="card-num">04</span>
+      <div class="service-icon">📣</div>
+      <h3>Paid Ads Management</h3>
+      <p>Nurture sequences, broadcast campaigns, and list segmentation that keep your audience engaged and ready to buy.</p>
+    </div>
+    <div class="service-card">
+      <span class="card-num">05</span>
+      <div class="service-icon">📧</div>
+      <h3>Email Marketing</h3>
+      <p>Behavioral nurture sequences, segmented broadcast campaigns, and lifecycle triggers that convert on autopilot.</p>
+    </div>
+    <div class="service-card">
+      <span class="card-num">06</span>
+      <div class="service-icon">📊</div>
+      <h3>Analytics & Reporting</h3>
+      <p>Real-time performance dashboards tracking every signal across your full acquisition and conversion pipeline.</p>
+    </div>
+  </div>
+</section>
+
+
+<!-- ── FUNNEL ── -->
+<section id="funnel" class="alt">
+  <div class="funnel-section">
+    <div>
+      <div class="section-eyebrow fade-in">SYSTEM</div>
+      <h2 class="section-title fade-in">The Curated Digital 5-Stage Acquisition System</h2>
+      <p class="section-sub fade-in">We don't just build pages. We architect the entire journey a stranger takes to become a paying client. Each stage is engineered to maximize the conversion to the next.</p>
+      <a href="#book" class="btn-primary fade-in" style="display:inline-flex;">⬡ Get This System →</a>
+    </div>
+    <div class="funnel-visual stagger">
+      <div class="funnel-step">
+        <div class="step-num">01</div>
+        <div class="step-info">
+          <h4>Lead Capture Page</h4>
+          <p>High-converting opt-in with a compelling lead magnet offer</p>
+        </div>
+      </div>
+      <div class="funnel-step">
+        <div class="step-num">02</div>
+        <div class="step-info">
+          <h4>Traffic & Awareness</h4>
+          <p>Paid ads, SEO, and organic content bring cold prospects in</p>
+        </div>
+      </div>
+      <div class="funnel-step">
+        <div class="step-num">03</div>
+        <div class="step-info">
+          <h4>Nurture Automation</h4>
+          <p>Email + SMS sequences build trust and pre-sell your service</p>
+        </div>
+      </div>
+      <div class="funnel-step">
+        <div class="step-num">04</div>
+        <div class="step-info">
+          <h4>Booking Page</h4>
+          <p>Frictionless calendar booking with auto-confirmations sent</p>
+        </div>
+      </div>
+      <div class="funnel-step">
+        <div class="step-num">05</div>
+        <div class="step-info">
+          <h4>Sales Call → Close</h4>
+          <p>Pre-qualified prospects arrive ready — you just confirm the dea</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── AUTOMATIONS ── -->
+<section id="automations">
+  <div class="section-eyebrow fade-in">AUTOMATE</div>
+  <h2 class="section-title fade-in">YOUR SYSTEM NEVER SLEEPS</h2>
+  <p class="section-sub fade-in">Intelligent workflows respond, follow up, and nurture leads at machine speed — zero manual overhead required.</p>
+  <div class="auto-grid stagger">
+    <div class="auto-card">
+      <span class="auto-icon">💬</span>
+      <h3>Instant Lead Response</h3>
+      <p>Every opt-in triggers a personalized SMS + email within 90 seconds. You're always first to respond — at any hour.</p>
+      <span class="auto-badge">SMS + EMAIL PROTOCOL</span>
+    </div>
+    <div class="auto-card">
+      <span class="auto-icon">📅</span>
+      <h3>Appointment Reminders</h3>
+      <p>Multi-channel reminders at 24h, 1h, and 15min before each call. No-show rate drops to near zero, every time.</p>
+      <span class="auto-badge">CALENDAR SYNC ACTIVE</span>
+    </div>
+    <div class="auto-card">
+      <span class="auto-icon">🔄</span>
+      <h3>Re-engagement Sequences</h3>
+      <p>Cold leads trigger a 7-day AI-powered win-back campaign — recovering 18–25% of lost pipeline opportunities.</p>
+      <span class="auto-badge">AI-POWERED MODULE</span>
+    </div>
+    <div class="auto-card">
+      <span class="auto-icon">🏆</span>
+      <h3>Post-Sale Onboarding</h3>
+      <p>New clients are auto-welcomed, sent contracts, onboarding docs, and a check-in sequence. Zero admin delay.</p>
+      <span class="auto-badge">CRM INTEGRATED</span>
+    </div>
+  </div>
+</section>
+
+<!-- ── TESTIMONIALS ── -->
+<section id="testimonials" class="alt">
+  <div class="section-eyebrow fade-in">RESULTS</div>
+  <h2 class="section-title fade-in">REAL SYSTEMS. REAL NUMBERS.</h2>
+  <p class="section-sub fade-in">Documented results from clients who deployed The Curated Digital acquisition system.</p>
+  <div class="testi-grid stagger">
+    <div class="testi-card">
+      <div class="stars">★★★★★</div>
+      <blockquote>"Within 6 weeks of launch, we went from 2 booked calls a week to 14. The automations alone saved 3 hours daily."</blockquote>
+      <div class="reviewer">
+        <div class="avatar" style="background:var(--magenta);">MR</div>
+        <div class="reviewer-info">
+          <strong>Marco Reyes</strong>
+          <span>Founder, BrightPath Coaching</span>
+        </div>
+      </div>
+    </div>
+    <div class="testi-card">
+      <div class="stars">★★★★★</div>
+      <blockquote>"Page conversion went from 8% to 34% post-redesign. The Curated Digital knows exactly what makes people book appointments."</blockquote>
+      <div class="reviewer">
+        <div class="avatar" style="background:#8c50ff;">SC</div>
+        <div class="reviewer-info">
+          <strong>Sofia Cruz</strong>
+          <span>CEO, Lumera Wellness Clinic</span>
+        </div>
+      </div>
+    </div>
+    <div class="testi-card">
+      <div class="stars">★★★★★</div>
+      <blockquote>"We were spending ₱80k/month on ads with zero system. The Curated Digital built our funnel in 3 weeks and we recouped it in month one."</blockquote>
+      <div class="reviewer">
+        <div class="avatar" style="background:var(--lime);color:#000;">KD</div>
+        <div class="reviewer-info">
+          <strong>Kevin Dela Cruz</strong>
+          <span>Director, OakRoot Realty</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── BOOKING ── -->
+<section id="book" class="booking-section">
+  <div class="section-eyebrow fade-in" style="justify-content:center;">CONTACT</div>
+  <h2 class="section-title fade-in" style="max-width:580px;margin:0 auto 0.8rem;text-align:center;">BOOK YOUR FREE STRATEGY SESSION</h2>
+  <p class="section-sub fade-in" style="margin:0 auto 2.5rem;text-align:center;">30 minutes. No pitch. Just a deep-dive into your current system and a custom roadmap to 2× your booked appointments.</p>
+
+  <div class="booking-card fade-in">
+    <h3>// SCHEDULE YOUR CALL</h3>
+    <p>Pre-qualified sessions only. Fill in your details and we'll confirm within 24 hours.</p>
+    <div class="form-grid">
+      <div class="form-row">
+        <label>First Name</label>
+        <input type="text" placeholder="Juan">
+      </div>
+      <div class="form-row">
+        <label>Last Name</label>
+        <input type="text" placeholder="Dela Cruz">
+      </div>
+    </div>
+    <div class="form-row">
+      <label>Business Email</label>
+      <input type="email" placeholder="juandelacruz@yourbusiness.com">
+    </div>
+    <div class="form-row">
+      <label>Phone / WhatsApp</label>
+      <input type="tel" placeholder="+63 912 345 6789">
+    </div>
+    <div class="form-row">
+      <label>Primary Need</label>
+      <select>
+        <option value="">SELECT SERVICE MODULE...</option>
+        <option>Landing Page Design</option>
+        <option>Sales Funnel Build</option>
+        <option>CRM & Automations</option>
+        <option>Paid Ads Management</option>
+        <option>Full Growth System</option>
+      </select>
+    </div>
+    <div class="form-row">
+      <label>Monthly Marketing Budget</label>
+      <select>
+        <option value="">SELECT BUDGET RANGE...</option>
+        <option>Under ₱5,000</option>
+        <option>₱5,000 – ₱20,000</option>
+        <option>₱20,000 – ₱50,000</option>
+        <option>₱50,000+</option>
+      </select>
+    </div>
+    <button class="btn-book"><span>⬡ DEPLOY MY STRATEGY CALL</span></button>
+    <p class="booking-note">// ENCRYPTED · PRIVATE · NO SPAM PROTOCOLS ACTIVE</p>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <a href="#" class="logo" style="font-size:0.9rem;">THE CURATED<span> DIGITAL</span></a>
+  <span class="footer-copy">© 2026 THE CURATED DIGITAL. ALL RIGHTS RESERVED.</span>
+</footer>
+
+<script>
+// Intersection observer for scroll reveals
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.fade-in, .stagger').forEach(el => observer.observe(el));
+
+// Booking button
+document.querySelector('.btn-book').addEventListener('click', function() {
+  const inputs = document.querySelectorAll('.booking-card input, .booking-card select');
+  let allFilled = true;
+  inputs.forEach(i => { if (!i.value.trim()) allFilled = false; });
+
+  const span = this.querySelector('span');
+  if (!allFilled) {
+    span.textContent = '⚠ INPUT REQUIRED — FILL ALL FIELDS';
+    this.style.borderColor = 'var(--magenta)';
+    this.style.color = 'var(--magenta)';
+    setTimeout(() => {
+      span.textContent = '⬡ DEPLOY MY STRATEGY CALL';
+      this.style.borderColor = '';
+      this.style.color = '';
+    }, 2500);
+  } else {
+    span.textContent = '✓ REQUEST TRANSMITTED — STANDBY';
+    this.style.background = 'var(--lime)';
+    this.style.color = '#000';
+    this.style.borderColor = 'var(--lime)';
+    setTimeout(() => {
+      window.location.href = 'booking_confirmed.htm';
+    }, 1200);
+  }
+});
+</script>
+</body>
+</html>
